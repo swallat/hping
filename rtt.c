@@ -36,6 +36,15 @@ void minavgmax(float ms_delay)
 	mpf_add(rtt_sumsq, rtt_sumsq, ms_delay_sq_mpf);
 }
 
+static inline void tvsub(struct timeval *out, struct timeval *in)
+{
+	if ((out->tv_usec -= in->tv_usec) < 0) {
+		--out->tv_sec;
+		out->tv_usec += 1000000;
+	}
+	out->tv_sec -= in->tv_sec;
+}
+
 int rtt(int *seqp, int recvport, float *ms_delay)
 {
 	long sec_delay = 0, usec_delay = 0;
