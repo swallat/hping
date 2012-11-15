@@ -27,6 +27,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <pcap.h>
+#include <gmp.h>
 
 #include "hping2.h"
 
@@ -55,7 +56,12 @@ float
 	rtt_max = 0,
 	rtt_avg = 0;
 
+mpf_t
+	rtt_sum,
+	rtt_sumsq;
+
 int
+	rtt_counter = 0,
 	sockpacket,
 	sockraw,
 	sent_pkt = 0,
@@ -201,6 +207,9 @@ int main(int argc, char **argv)
 			"Try `hping2 --help' for more information.\n");
 		exit(1);
 	}
+
+	/* Initialize statistics */
+	mpf_inits(rtt_sum, rtt_sumsq);
 
 	/* reverse sign */
 	if (opt_sign || opt_listenmode) {

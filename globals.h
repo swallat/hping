@@ -13,10 +13,16 @@
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
 
+#include <gmp.h>
+
 extern float
 		rtt_min,
 		rtt_max,
 		rtt_avg;
+
+extern mpf_t
+	rtt_sum,
+	rtt_sumsq;
 
 extern unsigned int
 		tcp_th_flags,
@@ -37,7 +43,8 @@ extern unsigned int
 extern unsigned short int
 		data_size;
 
-extern int	opt_debug,
+extern int	rtt_counter,
+		opt_debug,
 		sockpacket,
 		sockraw,
 		sent_pkt,

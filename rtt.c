@@ -18,14 +18,22 @@
 
 void minavgmax(float ms_delay)
 {
-	static int avg_counter = 0;
+	//static int avg_counter = 0;
 
 	if (rtt_min == 0 || ms_delay < rtt_min)
 		rtt_min = ms_delay;
 	if (rtt_max == 0 || ms_delay > rtt_max)
 		rtt_max = ms_delay;
-	avg_counter++;
-	rtt_avg = (rtt_avg*(avg_counter-1)/avg_counter)+(ms_delay/avg_counter);
+	rtt_counter++;
+	//rtt_avg = (rtt_avg*(avg_counter-1)/avg_counter)+(ms_delay/avg_counter);
+	mpf_t ms_delay_mpf;
+	mpf_init_set_d(ms_delay_mpf, ms_delay);
+	mpf_add(rtt_sum, rtt_sum, ms_delay_mpf);
+
+	mpf_t ms_delay_sq_mpf;
+	mpf_init(ms_delay_sq_mpf);
+	mpf_pow_ui(ms_delay_sq_mpf, ms_delay_mpf, 2);
+	mpf_add(rtt_sumsq, rtt_sumsq, ms_delay_sq_mpf);
 }
 
 int rtt(int *seqp, int recvport, float *ms_delay)

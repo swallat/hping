@@ -24,7 +24,6 @@
 
 #include <sys/ioctl.h>
 #include <pcap.h>
-#include <net/bpf.h>
 
 #include "release.h"
 #include "hping2.h"

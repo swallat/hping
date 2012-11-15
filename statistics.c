@@ -29,14 +29,66 @@ void	print_statistics(int signal_id)
 		else
 			lossrate = 100;
 
+	double stdev_d = 0;
+	mpf_t variance1, stdev1, count, mean, pow_mean, factor, sub;
+	mpf_init(variance1);
+	mpf_init(stdev1);
+	mpf_init(mean);
+	mpf_init(pow_mean);
+	mpf_init(factor);
+	mpf_init(sub);
+	mpf_init_set_si(count, rtt_counter);
+	mpf_div(mean, rtt_sum, count);
+	mpf_pow_ui(pow_mean, mean, 2);
+	mpf_mul(factor, pow_mean, count);
+	mpf_sub(sub, rtt_sumsq, factor);
+	mpf_div(variance1,sub, count);
+	mpf_sqrt(stdev1, variance1);
+	stdev_d = mpf_get_d(stdev1);
+
+	double rtt_mean_d = mpf_get_d(mean);
+	double unbiased_stdev;
+	if (rtt_counter > 1) {
+		/*
+		 * mean = sum/obs;
+		 * variance = (1/obs-1) * (sumsq - obs*mean*mean);
+		 */
+		mpf_t variance, one, count_clean, divisor, stdev;
+		mpf_init(variance);
+		mpf_init(divisor);
+		mpf_init(stdev);
+		mpf_init_set_si(one, 1);
+		mpf_init_set_si(count_clean, (rtt_counter-1));
+		mpf_div(divisor, one, count_clean);
+		mpf_mul(variance, divisor, sub);
+		mpf_sqrt(stdev, variance);
+		unbiased_stdev = mpf_get_d(stdev);
+		mpf_clear(variance);
+		mpf_clear(one);
+		mpf_clear(count_clean);
+		mpf_clear(divisor);
+		mpf_clear(stdev);
+	}
+	mpf_clear(variance1);
+	mpf_clear(stdev1);
+	mpf_clear(count);
+	mpf_clear(mean);
+	mpf_clear(pow_mean);
+	mpf_clear(factor);
+	mpf_clear(sub);
+
 	fprintf(stderr, "\n--- %s hping statistic ---\n", targetname);
 	fprintf(stderr, "%d packets tramitted, %d packets received, "
 			"%d%% packet loss\n", sent_pkt, recv_pkt, lossrate);
 	if (out_of_sequence_pkt)
 		fprintf(stderr, "%d out of sequence packets received\n",
 			out_of_sequence_pkt);
-	fprintf(stderr, "round-trip min/avg/max = %.1f/%.1f/%.1f ms\n",
-		rtt_min, rtt_avg, rtt_max);
+	fprintf(stderr, "round-trip min/avg/max/stdev/unbiased_stdev = %.4f/%.4f/%.4f/%.4f/%.4f ms\n",
+		rtt_min, rtt_mean_d, rtt_max, stdev_d, unbiased_stdev);
+
+	mpf_clear(rtt_sum);
+	mpf_clear(rtt_sumsq);
+
 
 	/* manage exit code */
 	if (opt_tcpexitcode)
