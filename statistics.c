@@ -43,21 +43,15 @@ void	print_statistics(int signal_id)
 		mpf_init(sub);
 
 		mpf_init_set_si(count, rtt_counter);
-		printf("POINTa\n");
 		mpf_div(mean, rtt_sum, count);
-		printf("POINTb\n");
 		mpf_pow_ui(pow_mean, mean, 2);
-		printf("POINTc\n");
 		mpf_mul(factor, pow_mean, count);
-		printf("POINTd\n");
 		mpf_sub(sub, rtt_sumsq, factor);
-		printf("POINTe\n");
 		mpf_div(variance1,sub, count);
-		printf("POINTf\n");
 		mpf_sqrt(stdev1, variance1);
 		stdev_d = mpf_get_d(stdev1);
 
-		double rtt_mean_d = mpf_get_d(mean);
+		rtt_mean_d = mpf_get_d(mean);
 		if (rtt_counter > 1) {
 			/*
 			 * mean = sum/obs;
