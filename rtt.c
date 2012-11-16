@@ -26,7 +26,7 @@ int minavgmax_history(float ms_delay) {
 	float min_diff = (rtt_avg_history-diff);
 	float max_diff = (rtt_avg_history+diff);
 
-	if (history_count < 10) { // Use 10 measures to create history
+	if (history_count < 30) { // Use 10 measures to create history
 		rtt_avg_history = (rtt_avg_history*(history_count-1)/history_count)+(ms_delay/history_count);
 		return 1;
 	} else if (ms_delay <= max_diff && ms_delay >= min_diff) {
