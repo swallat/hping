@@ -19,14 +19,18 @@
 int minavgmax_history(float ms_delay) {
 	static int history_count = 0;
 	static float rtt_avg_history = 0;
-	if (history_count < 100) {
+	if (history_count < 200) {
 		history_count++;
 	}
-	rtt_avg_history = (rtt_avg_history*(history_count-1)/history_count)+(ms_delay/history_count);
-	float diff = rtt_avg_history * 1; // 100 percent
+	float diff = rtt_avg_history * 8; // 800 percent
 	float min_diff = (rtt_avg_history-diff);
 	float max_diff = (rtt_avg_history+diff);
-	if (rtt_avg_history <= max_diff && rtt_avg_history >= min_diff) {
+
+	if (history_count < 10) { // Use 10 measures to create history
+		rtt_avg_history = (rtt_avg_history*(history_count-1)/history_count)+(ms_delay/history_count);
+		return 1;
+	} else if (ms_delay <= max_diff && ms_delay >= min_diff) {
+		rtt_avg_history = (rtt_avg_history*(history_count-1)/history_count)+(ms_delay/history_count);
 		return 1; //accept delay
 	} else {
 		return 0; //refuse delay
