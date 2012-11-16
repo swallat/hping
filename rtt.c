@@ -25,7 +25,7 @@ int minavgmax_history(float ms_delay) {
 		return 1; //accept delay
 	} else {
 		rtt_avg_history = (rtt_avg_history*(history_count-1)/history_count)+(ms_delay/history_count);
-		float diff = rtt_avg_history * 2; // 200 percent
+		float diff = rtt_avg_history * 1; // 100 percent
 		float min_diff = (rtt_avg_history-diff);
 		float max_diff = (rtt_avg_history+diff);
 		if (rtt_avg_history <= max_diff && rtt_avg_history >= min_diff) {
