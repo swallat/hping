@@ -254,7 +254,7 @@ int recv_icmp(void *packet, size_t size)
 		status = rtt(&icmp_seq, 0, &ms_delay);
 		log_ip(status, icmp_seq);
 
-		printf("icmp_seq=%d rtt=%.1f ms\n", icmp_seq, ms_delay);
+		printf("icmp_seq=%d rtt=%.4f ms\n", icmp_seq, ms_delay);
 		if (icmp.type == ICMP_TIMESTAMPREPLY) {
 			if ((size - ICMPHDR_SIZE) >= 12)
 				log_icmp_ts(packet+ICMPHDR_SIZE);
