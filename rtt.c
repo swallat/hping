@@ -16,10 +16,32 @@
 #include "hping2.h"
 #include "globals.h"
 
+int minavgmax_history(float ms_delay) {
+	static int history_count = 0;
+	static float rtt_avg_history = 0;
+	if (history_count < 100) {
+		history_count++;
+		rtt_avg_history = (rtt_avg_history*(history_count-1)/history_count)+(ms_delay/history_count);
+		return 1; //accept delay
+	} else {
+		rtt_avg_history = (rtt_avg_history*(history_count-1)/history_count)+(ms_delay/history_count);
+		float diff = rtt_avg_history * 2; // 200 percent
+		float min_diff = (rtt_avg_history-diff);
+		float max_diff = (rtt_avg_history+diff);
+		if (rtt_avg_history <= max_diff && rtt_avg_history >= min_diff) {
+			return 1; //accept delay
+		} else {
+			return 0; //refuse delay
+		}
+	}
+}
+
 void minavgmax(float ms_delay)
 {
 	//static int avg_counter = 0;
-
+	if (minavgmax_history(ms_delay) == 0) {
+		return;
+	}
 	if (rtt_min == 0 || ms_delay < rtt_min)
 		rtt_min = ms_delay;
 	if (rtt_max == 0 || ms_delay > rtt_max)
