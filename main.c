@@ -209,7 +209,8 @@ int main(int argc, char **argv)
 	}
 
 	/* Initialize statistics */
-	mpf_inits(rtt_sum, rtt_sumsq);
+	mpf_init(rtt_sum);
+	mpf_init(rtt_sumsq);
 
 	/* reverse sign */
 	if (opt_sign || opt_listenmode) {
