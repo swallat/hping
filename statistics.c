@@ -88,7 +88,7 @@ void	print_statistics(int signal_id)
 	if (out_of_sequence_pkt)
 		fprintf(stderr, "%d out of sequence packets received\n",
 			out_of_sequence_pkt);
-	fprintf(stderr, "history smoothing filter: packets accepted/packets refused = %d/%d\n",
+	fprintf(stderr, "history smoothing filter: packets accepted/packets refused = %ld/%ld\n",
 			history_accepted, history_dropped);
 	fprintf(stderr, "round-trip min/avg/max/stdev/unbiased_stdev = %.4f/%.4f/%.4f/%.4f/%.4f ms\n",
 		rtt_min, rtt_mean_d, rtt_max, stdev_d, unbiased_stdev);

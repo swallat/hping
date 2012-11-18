@@ -43,8 +43,10 @@ extern unsigned int
 extern unsigned short int
 		data_size;
 
-extern int	history_accepted,
-		history_dropped,
+extern long	history_accepted,
+		history_dropped;
+
+extern int
 		rtt_counter,
 		opt_debug,
 		sockpacket,
