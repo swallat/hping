@@ -29,8 +29,10 @@ int minavgmax_history(float ms_delay) {
 				history_count++;
 		}
 		rtt_avg_history = (rtt_avg_history*(history_count-1)/history_count)+(ms_delay/history_count);
+		history_accepted++;
 		return 1;
 	} else {
+		history_dropped++;
 		return 0; //refuse delay
 	}
 

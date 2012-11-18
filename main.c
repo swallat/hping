@@ -61,6 +61,8 @@ mpf_t
 	rtt_sumsq;
 
 int
+	history_accepted = 0,
+	history_dropped = 0,
 	rtt_counter = 0,
 	sockpacket,
 	sockraw,
