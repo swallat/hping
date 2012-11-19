@@ -82,16 +82,71 @@ void	print_statistics(int signal_id)
 		mpf_clear(sub);
 	}
 
+	double jitter_stdev_d = 0;
+	double jitter_mean_d = 0;
+	double jitter_unbiased_stdev = 0;
+	if (jitter_counter > 0){
+		mpf_t jitter_variance1, jitter_stdev1, jitter_count, jitter_mean, jitter_pow_mean, jitter_factor, jitter_sub;
+		mpf_init(jitter_variance1);
+		mpf_init(jitter_stdev1);
+		mpf_init(jitter_mean);
+		mpf_init(jitter_pow_mean);
+		mpf_init(jitter_factor);
+		mpf_init(jitter_sub);
+
+		mpf_init_set_si(jitter_count, jitter_counter);
+		mpf_div(jitter_mean, jitter_sum, jitter_count);
+		mpf_pow_ui(jitter_pow_mean, jitter_mean, 2);
+		mpf_mul(jitter_factor, jitter_pow_mean, jitter_count);
+		mpf_sub(jitter_sub, jitter_sumsq, jitter_factor);
+		mpf_div(jitter_variance1,jitter_sub, jitter_count);
+		mpf_sqrt(jitter_stdev1, jitter_variance1);
+		jitter_stdev_d = mpf_get_d(jitter_stdev1);
+		jitter_mean_d = mpf_get_d(jitter_mean);
+		if (jitter_counter > 1) {
+			/*
+			 * mean = sum/obs;
+			 * variance = (1/obs-1) * (sumsq - obs*mean*mean);
+			 */
+			mpf_t jitter_variance, jitter_one, jitter_count_clean, jitter_divisor, jitter_stdev;
+			mpf_init(jitter_variance);
+			mpf_init(jitter_divisor);
+			mpf_init(jitter_stdev);
+			mpf_init_set_si(jitter_one, 1);
+			mpf_init_set_si(jitter_count_clean, (jitter_counter-1));
+			mpf_div(jitter_divisor, jitter_one, jitter_count_clean);
+			mpf_mul(jitter_variance, jitter_divisor, jitter_sub);
+			mpf_sqrt(jitter_stdev, jitter_variance);
+			jitter_unbiased_stdev = mpf_get_d(jitter_stdev);
+			mpf_clear(jitter_variance);
+			mpf_clear(jitter_one);
+			mpf_clear(jitter_count_clean);
+			mpf_clear(jitter_divisor);
+			mpf_clear(jitter_stdev);
+		}
+		mpf_clear(jitter_variance1);
+		mpf_clear(jitter_stdev1);
+		mpf_clear(jitter_count);
+		mpf_clear(jitter_mean);
+		mpf_clear(jitter_pow_mean);
+		mpf_clear(jitter_factor);
+		mpf_clear(jitter_sub);
+	}
+
 	fprintf(stderr, "\n--- %s hping statistic ---\n", targetname);
 	fprintf(stderr, "%d packets transmitted, %d packets received, "
 			"%d%% packet loss\n", sent_pkt, recv_pkt, lossrate);
 	if (out_of_sequence_pkt)
 		fprintf(stderr, "%d out of sequence packets received\n",
 			out_of_sequence_pkt);
-	fprintf(stderr, "history smoothing filter: packets accepted/packets refused = %ld/%ld\n",
+	fprintf(stderr, "rtt history smoothing filter: packets accepted/packets refused = %ld/%ld\n",
 			history_accepted, history_dropped);
 	fprintf(stderr, "round-trip min/avg/max/stdev/unbiased_stdev = %.4f/%.4f/%.4f/%.4f/%.4f ms\n",
 		rtt_min, rtt_mean_d, rtt_max, stdev_d, unbiased_stdev);
+	fprintf(stderr, "jitter history smoothing filter: packets accepted/packets refused = %ld/%ld\n",
+				history_jitter_accepted, history_jitter_dropped);
+	fprintf(stderr, "jitter min/avg/max/stdev/unbiased_stdev = %.4f/%.4f/%.4f/%.4f/%.4f ms\n",
+		jitter_min, jitter_mean_d, jitter_max, jitter_stdev_d, jitter_unbiased_stdev);
 
 	mpf_clear(rtt_sum);
 	mpf_clear(rtt_sumsq);

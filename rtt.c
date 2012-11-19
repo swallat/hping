@@ -60,6 +60,50 @@ void minavgmax(float ms_delay)
 	mpf_add(rtt_sumsq, rtt_sumsq, ms_delay_sq_mpf);
 }
 
+int minavgmax_jitter_history(float jitter_delay) {
+	static int history_count = 0;
+	static float jitter_avg_history = 0;
+
+	float diff = jitter_avg_history * 8; // 800 percent
+	float min_diff = (jitter_avg_history-diff);
+	float max_diff = (jitter_avg_history+diff);
+
+	if (history_count < 50 || (jitter_delay <= max_diff && jitter_delay >= min_diff)) { // Use 16 measures to create history (like RTP)
+		if (history_count < 10000) { // Use maximum 10000 measures for history
+				history_count++;
+		}
+		jitter_avg_history = (jitter_avg_history*(history_count-1)/history_count)+(jitter_delay/history_count);
+		history_jitter_accepted++;
+		return 1;
+	} else {
+		history_jitter_dropped++;
+		return 0; //refuse delay
+	}
+
+}
+
+void minavgmax_jitter(float ms_interarival_time)
+{
+	//static int avg_counter = 0;
+	if (minavgmax_jitter_history(ms_interarival_time) == 0) {
+		return;
+	}
+	if (jitter_min == 0 || ms_interarival_time < jitter_min)
+		jitter_min = ms_interarival_time;
+	if (jitter_max == 0 || ms_interarival_time > jitter_max)
+		jitter_max = ms_interarival_time;
+	jitter_counter++;
+	mpf_t jitter_delay_mpf;
+	mpf_init_set_d(jitter_delay_mpf, ms_interarival_time);
+	mpf_add(jitter_sum, jitter_sum, jitter_delay_mpf);
+
+	mpf_t jitter_delay_sq_mpf;
+	mpf_init(jitter_delay_sq_mpf);
+	mpf_pow_ui(jitter_delay_sq_mpf, jitter_delay_mpf, 2);
+	mpf_add(jitter_sumsq, jitter_sumsq, jitter_delay_sq_mpf);
+}
+
+
 static inline void tvsub(struct timeval *out, struct timeval *in)
 {
 	if ((out->tv_usec -= in->tv_usec) < 0) {
@@ -71,7 +115,10 @@ static inline void tvsub(struct timeval *out, struct timeval *in)
 
 int rtt(int *seqp, int recvport, float *ms_delay)
 {
+	static time_t lastTime_sec = 0;
+	static time_t lastTime_usec = 0;
 	long sec_delay = 0, usec_delay = 0;
+	long sec_diff = 0, usec_diff = 0;
 	int i, tablepos = -1, status;
 
 	if (*seqp != 0) {
@@ -95,13 +142,34 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 		status = delaytable[tablepos].status;
 		delaytable[tablepos].status = S_RECV;
 
+
+		if (lastTime_sec != 0 && lastTime_usec != 0) {
+			time_t curTime_sec = time(NULL);
+			time_t curTime_usec = get_usec();
+			sec_diff = curTime_sec - lastTime_sec;
+			usec_diff = curTime_usec - lastTime_usec;
+
+			if (sec_diff == 0 && usec_diff < 0)
+				usec_diff += 1000000;
+
+			float ms_interarrival_time = (sec_diff * 1000) + ((float)usec_diff / 1000);
+			minavgmax_jitter(ms_interarrival_time);
+
+		} else {
+			lastTime_sec = time(NULL);
+			lastTime_usec = get_usec();
+		}
+
 		sec_delay = time(NULL) - delaytable[tablepos].sec;
 		usec_delay = get_usec() - delaytable[tablepos].usec;
 		if (sec_delay == 0 && usec_delay < 0)
 			usec_delay += 1000000;
 
 		*ms_delay = (sec_delay * 1000) + ((float)usec_delay / 1000);
+
 		minavgmax(*ms_delay);
+
+
 	}
 	else
 	{

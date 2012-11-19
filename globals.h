@@ -18,11 +18,16 @@
 extern float
 		rtt_min,
 		rtt_max,
-		rtt_avg;
+		rtt_avg,
+		jitter_min,
+		jitter_max,
+		jitter_avg;
 
 extern mpf_t
 	rtt_sum,
-	rtt_sumsq;
+	rtt_sumsq,
+	jitter_sum,
+	jitter_sumsq;
 
 extern unsigned int
 		tcp_th_flags,
@@ -44,10 +49,13 @@ extern unsigned short int
 		data_size;
 
 extern long	history_accepted,
-		history_dropped;
+		history_dropped,
+		history_jitter_accepted,
+		history_jitter_dropped;
 
 extern int
 		rtt_counter,
+		jitter_counter,
 		opt_debug,
 		sockpacket,
 		sockraw,

@@ -54,17 +54,25 @@ unsigned short int
 float
 	rtt_min = 0,
 	rtt_max = 0,
-	rtt_avg = 0;
+	rtt_avg = 0,
+	jitter_min = 0,
+	jitter_max = 0,
+	jitter_avg = 0;
 
 mpf_t
 	rtt_sum,
-	rtt_sumsq;
+	rtt_sumsq,
+	jitter_sum,
+	jitter_sumsq;
 
 long
 	history_accepted = 0,
-	history_dropped = 0;
+	history_dropped = 0,
+	history_jitter_accepted = 0,
+	history_jitter_dropped = 0;
 int
 	rtt_counter = 0,
+	jitter_counter = 0,
 	sockpacket,
 	sockraw,
 	sent_pkt = 0,
@@ -214,6 +222,8 @@ int main(int argc, char **argv)
 	/* Initialize statistics */
 	mpf_init(rtt_sum);
 	mpf_init(rtt_sumsq);
+	mpf_init(jitter_sum);
+	mpf_init(jitter_sumsq);
 
 	/* reverse sign */
 	if (opt_sign || opt_listenmode) {
