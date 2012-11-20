@@ -154,6 +154,8 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 
 			float ms_interarrival_time = (sec_diff * 1000) + ((float)usec_diff / 1000);
 			minavgmax_jitter(ms_interarrival_time);
+			lastTime_sec = curTime_sec;
+			lastTime_usec = curTime_usec;
 
 		} else {
 			lastTime_sec = time(NULL);
