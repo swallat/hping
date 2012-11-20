@@ -24,7 +24,7 @@ int minavgmax_history(float ms_delay) {
 	float min_diff = (rtt_avg_history-diff);
 	float max_diff = (rtt_avg_history+diff);
 
-	if (history_count < 50 || (ms_delay <= max_diff && ms_delay >= min_diff)) { // Use 10 measures to create history
+	if (history_count < 50 || (ms_delay <= max_diff && ms_delay >= min_diff)) { // Use 50 measures to create history
 		if (history_count < 10000) { // Use maximum 10000 measures for history
 				history_count++;
 		}
@@ -68,7 +68,7 @@ int minavgmax_jitter_history(float jitter_delay) {
 	float min_diff = (jitter_avg_history-diff);
 	float max_diff = (jitter_avg_history+diff);
 
-	if (history_count < 50 || (jitter_delay <= max_diff && jitter_delay >= min_diff)) { // Use 16 measures to create history (like RTP)
+	if (history_count < 50 || (jitter_delay <= max_diff && jitter_delay >= min_diff)) { // Use 50 measures to create history (like RTP)
 		if (history_count < 10000) { // Use maximum 10000 measures for history
 				history_count++;
 		}

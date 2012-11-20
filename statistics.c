@@ -139,11 +139,11 @@ void	print_statistics(int signal_id)
 	if (out_of_sequence_pkt)
 		fprintf(stderr, "%d out of sequence packets received\n",
 			out_of_sequence_pkt);
-	fprintf(stderr, "rtt history smoothing filter: packets accepted/packets refused = %ld/%ld\n",
+	fprintf(stderr, "round-trip smoothing filter: packets accepted/packets refused = %ld/%ld\n",
 			history_accepted, history_dropped);
 	fprintf(stderr, "round-trip min/avg/max/stdev/unbiased_stdev = %.4f/%.4f/%.4f/%.4f/%.4f ms\n",
 		rtt_min, rtt_mean_d, rtt_max, stdev_d, unbiased_stdev);
-	fprintf(stderr, "jitter history smoothing filter: packets accepted/packets refused = %ld/%ld\n",
+	fprintf(stderr, "jitter smoothing filter: packets accepted/packets refused = %ld/%ld\n",
 				history_jitter_accepted, history_jitter_dropped);
 	fprintf(stderr, "jitter min/avg/max/stdev/unbiased_stdev = %.4f/%.4f/%.4f/%.4f/%.4f ms\n",
 		jitter_min, jitter_mean_d, jitter_max, jitter_stdev_d, jitter_unbiased_stdev);
