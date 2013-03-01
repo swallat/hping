@@ -150,7 +150,12 @@ int
 	icmp_ip_dstport	= DEFAULT_DPORT,
 	opt_force_icmp  = FALSE,
 	icmp_cksum	= DEFAULT_ICMP_CKSUM,
-	raw_ip_protocol	= DEFAULT_RAW_IP_PROTOCOL;
+	raw_ip_protocol	= DEFAULT_RAW_IP_PROTOCOL,
+	opt_use_pre_time = FALSE,
+	opt_pre_run_time = 0;
+
+time_t
+	initTime_sec = 0;
 
 char
 	datafilename	[1024],

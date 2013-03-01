@@ -36,7 +36,7 @@ enum {	OPT_COUNT, OPT_INTERVAL, OPT_NUMERIC, OPT_QUIET, OPT_INTERFACE,
 	OPT_ICMP_IPSRC, OPT_ICMP_IPDST, OPT_ICMP_SRCPORT, OPT_ICMP_DSTPORT,
 	OPT_ICMP_GW, OPT_FORCE_ICMP, OPT_APD_SEND, OPT_SCAN, OPT_FASTER,
 	OPT_BEEP, OPT_FLOOD, OPT_CLOCK_SKEW, OPT_CS_WINDOW, OPT_CS_WINDOW_SHIFT,
-        OPT_CS_VECTOR_LEN };
+        OPT_CS_VECTOR_LEN, OPT_PRE_RUN_TIME};
 
 static struct ago_optlist hping_optlist[] = {
 	{ 'c',	"count",	OPT_COUNT,		AGO_NEEDARG },
@@ -129,6 +129,7 @@ static struct ago_optlist hping_optlist[] = {
 	{ '\0', "clock-skew-win", OPT_CS_WINDOW,	AGO_NEEDARG},
 	{ '\0', "clock-skew-win-shift", OPT_CS_WINDOW_SHIFT,	AGO_NEEDARG},
 	{ '\0', "clock-skew-packets-per-sample", OPT_CS_VECTOR_LEN,AGO_NEEDARG},
+	{ '\0', "pre-run-time", OPT_PRE_RUN_TIME, AGO_NEEDARG|AGO_EXCEPT0},
 	AGO_LIST_TERM
 };
 
@@ -557,34 +558,45 @@ int parse_options(int argc, char **argv)
 		case OPT_FLOOD:
 			opt_flood = TRUE;
 			break;
-                case OPT_CLOCK_SKEW:
+		case OPT_CLOCK_SKEW:
 			opt_tcp_timestamp = TRUE;
-                        opt_clock_skew = TRUE;
-                        break;
-                case OPT_CS_WINDOW:
-                        cs_window = strtol(ago_optarg, NULL, 0);
-                        if (cs_window < 30) {
-                            fprintf(stderr,
-                                    "clock skew window can't be < 30 sec.\n");
-                            exit(1);
-                        }
-                        break;
-                case OPT_CS_WINDOW_SHIFT:
-                        cs_window_shift = strtol(ago_optarg, NULL, 0);
-                        if (cs_window_shift < 1) {
-                            fprintf(stderr,
-                                    "clock skew window shift can't be < 1\n");
-                            exit(1);
-                        }
-                        break;
-                case OPT_CS_VECTOR_LEN:
-                        cs_vector_len = strtol(ago_optarg, NULL, 0);
-                        if (cs_vector_len < 1) {
-                            fprintf(stderr,
-                                    "clock skew packets per sample can't be < 1\n");
-                            exit(1);
-                        }
-                        break;
+			opt_clock_skew = TRUE;
+			break;
+		case OPT_CS_WINDOW:
+			cs_window = strtol(ago_optarg, NULL, 0);
+			if (cs_window < 30) {
+				fprintf(stderr,
+						"clock skew window can't be < 30 sec.\n");
+				exit(1);
+			}
+			break;
+		case OPT_CS_WINDOW_SHIFT:
+			cs_window_shift = strtol(ago_optarg, NULL, 0);
+			if (cs_window_shift < 1) {
+				fprintf(stderr,
+						"clock skew window shift can't be < 1\n");
+				exit(1);
+			}
+			break;
+		case OPT_CS_VECTOR_LEN:
+			cs_vector_len = strtol(ago_optarg, NULL, 0);
+			if (cs_vector_len < 1) {
+				fprintf(stderr,
+						"clock skew packets per sample can't be < 1\n");
+				exit(1);
+			}
+			break;
+		case OPT_PRE_RUN_TIME:
+			opt_pre_run_time = strtol(ago_optarg, NULL, 0);
+			if (opt_pre_run_time < 0){
+				fprintf(stderr,
+						"please specify a pre run time in seconds greater or equal to 0");
+				exit(1);
+			}
+			opt_use_pre_time = TRUE;
+			initTime_sec = time(NULL);
+			break;
+
 		}
 	}
 

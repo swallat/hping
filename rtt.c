@@ -38,9 +38,21 @@ int minavgmax_history(float ms_delay) {
 
 }
 
+int check_pre_run_time() {
+	if (opt_use_pre_time && (time(NULL) - initTime_sec) < opt_pre_run_time) {
+		return 0; //refuse
+	} else {
+		return 1;
+	}
+}
+
 void minavgmax(float ms_delay)
 {
 	//static int avg_counter = 0;
+
+	if (check_pre_run_time() == 0) {
+		return;
+	}
 	if (minavgmax_history(ms_delay) == 0) {
 		return;
 	}
@@ -85,6 +97,11 @@ int minavgmax_jitter_history(float jitter_delay) {
 void minavgmax_jitter(float ms_interarival_time)
 {
 	//static int avg_counter = 0;
+	if (check_pre_run_time() == 0) {
+			return;
+	}
+
+
 	if (minavgmax_jitter_history(ms_interarival_time) == 0) {
 		return;
 	}

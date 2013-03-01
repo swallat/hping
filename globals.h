@@ -13,8 +13,6 @@
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
 
-#include <gmp.h>
-
 extern float
 		rtt_min,
 		rtt_max,
@@ -23,6 +21,7 @@ extern float
 		jitter_max,
 		jitter_avg;
 
+#include <gmp.h>
 extern mpf_t
 	rtt_sum,
 	rtt_sumsq,
@@ -133,7 +132,13 @@ extern int
 		opt_force_icmp,
 		icmp_ip_protocol,
 		icmp_cksum,
-		raw_ip_protocol;
+		raw_ip_protocol,
+		opt_use_pre_time,
+		opt_pre_run_time;
+
+#include <time.h>
+extern time_t
+	initTime_sec;
 
 extern unsigned char 	lsr[255],
 			ssr[255];
