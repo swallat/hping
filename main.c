@@ -77,6 +77,8 @@ int
 	sockraw,
 	sent_pkt = 0,
 	recv_pkt = 0,
+	sent_pkt_stat = 0,
+	recv_pkt_stat = 0,
 	out_of_sequence_pkt = 0,
 	sending_wait = DEFAULT_SENDINGWAIT,	/* see DEFAULT_SENDINGWAIT */
 	opt_rawipmode	= FALSE,

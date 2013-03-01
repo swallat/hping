@@ -38,19 +38,19 @@ int minavgmax_history(float ms_delay) {
 
 }
 
-int check_pre_run_time() {
-	if (opt_use_pre_time && (time(NULL) - initTime_sec) < opt_pre_run_time) {
+int check_pre_run_time(time_t curTime) {
+	if (opt_use_pre_time && (curTime - initTime_sec) < opt_pre_run_time) {
 		return 0; //refuse
 	} else {
 		return 1;
 	}
 }
 
-void minavgmax(float ms_delay)
+void minavgmax(float ms_delay, time_t curTime)
 {
 	//static int avg_counter = 0;
 
-	if (check_pre_run_time() == 0) {
+	if (check_pre_run_time(curTime) == 0) {
 		return;
 	}
 	if (minavgmax_history(ms_delay) == 0) {
@@ -94,10 +94,10 @@ int minavgmax_jitter_history(float jitter_delay) {
 
 }
 
-void minavgmax_jitter(float ms_interarival_time)
+void minavgmax_jitter(float ms_interarival_time, time_t curTime)
 {
 	//static int avg_counter = 0;
-	if (check_pre_run_time() == 0) {
+	if (check_pre_run_time(curTime) == 0) {
 			return;
 	}
 
@@ -170,7 +170,7 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 				usec_diff += 1000000;
 
 			float ms_interarrival_time = (sec_diff * 1000) + ((float)usec_diff / 1000);
-			minavgmax_jitter(ms_interarrival_time);
+			minavgmax_jitter(ms_interarrival_time, curTime_sec);
 			lastTime_sec = curTime_sec;
 			lastTime_usec = curTime_usec;
 
@@ -178,15 +178,15 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 			lastTime_sec = time(NULL);
 			lastTime_usec = get_usec();
 		}
-
-		sec_delay = time(NULL) - delaytable[tablepos].sec;
+		time_t curTime = time(NULL);
+		sec_delay = curTime - delaytable[tablepos].sec;
 		usec_delay = get_usec() - delaytable[tablepos].usec;
 		if (sec_delay == 0 && usec_delay < 0)
 			usec_delay += 1000000;
 
 		*ms_delay = (sec_delay * 1000) + ((float)usec_delay / 1000);
 
-		minavgmax(*ms_delay);
+		minavgmax(*ms_delay, curTime);
 
 
 	}

@@ -123,8 +123,11 @@ void wait_packet(void)
 		return;
 	}
 
-	if (match)
+	if(match)
 		recv_pkt++;
+
+	if (match && !(opt_use_pre_time && (time(NULL) - initTime_sec) < opt_pre_run_time))
+		recv_pkt_stat++;
 
 	/* Dump the packet in hex */
 	if (opt_hexdump && match && !opt_quiet)

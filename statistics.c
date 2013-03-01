@@ -21,10 +21,10 @@ void	print_statistics(int signal_id)
 	unsigned int lossrate;
 
 	close_pcap();
-	if (recv_pkt > 0)
-		lossrate = 100 - ((recv_pkt*100)/sent_pkt);
+	if (recv_pkt_stat > 0)
+		lossrate = 100 - ((recv_pkt_stat*100)/sent_pkt_stat);
 	else
-		if (!sent_pkt)
+		if (!sent_pkt_stat)
 			lossrate = 0;
 		else
 			lossrate = 100;

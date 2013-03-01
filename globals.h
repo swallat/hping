@@ -60,6 +60,8 @@ extern int
 		sockraw,
 		sent_pkt,
 		recv_pkt,
+		sent_pkt_stat,
+		recv_pkt_stat,
 		out_of_sequence_pkt,
 		sending_wait,
 		opt_rawipmode,
