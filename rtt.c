@@ -137,6 +137,8 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 	long sec_delay = 0, usec_delay = 0;
 	long sec_diff = 0, usec_diff = 0;
 	int i, tablepos = -1, status;
+	time_t curTime_sec = time(NULL);
+	time_t curTime_usec = get_usec();
 
 	if (*seqp != 0) {
 		for (i = 0; i < TABLESIZE; i++)
@@ -161,8 +163,6 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 
 
 		if (lastTime_sec != 0 && lastTime_usec != 0) {
-			time_t curTime_sec = time(NULL);
-			time_t curTime_usec = get_usec();
 			sec_diff = curTime_sec - lastTime_sec;
 			usec_diff = curTime_usec - lastTime_usec;
 
@@ -178,15 +178,14 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 			lastTime_sec = time(NULL);
 			lastTime_usec = get_usec();
 		}
-		time_t curTime = time(NULL);
-		sec_delay = curTime - delaytable[tablepos].sec;
-		usec_delay = get_usec() - delaytable[tablepos].usec;
+		sec_delay = curTime_sec - delaytable[tablepos].sec;
+		usec_delay = curTime_usec - delaytable[tablepos].usec;
 		if (sec_delay == 0 && usec_delay < 0)
 			usec_delay += 1000000;
 
 		*ms_delay = (sec_delay * 1000) + ((float)usec_delay / 1000);
 
-		minavgmax(*ms_delay, curTime);
+		minavgmax(*ms_delay, curTime_sec);
 
 
 	}
