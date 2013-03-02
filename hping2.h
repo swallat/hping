@@ -63,7 +63,7 @@
 
 /* requests status table stuffs */
 /* Warning, TABLESIZE 0 == floating point exception */
-#define TABLESIZE	400
+#define TABLESIZE	1000
 #define S_SENT		0
 #define S_RECV		1
 

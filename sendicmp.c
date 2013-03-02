@@ -19,6 +19,7 @@
 #include <string.h>
 #include <signal.h>
 #include <errno.h>
+#include <limits.h>
 
 #include "hping2.h"
 #include "globals.h"
@@ -103,7 +104,11 @@ void send_icmp_echo(void)
 	send_ip_handler(packet, ICMPHDR_SIZE + data_size);
 	free (packet);
 
-	_icmp_seq++;
+	if (_icmp_seq == 65535) {
+		_icmp_seq = 0;
+	} else {
+		++_icmp_seq;
+	}
 }
 
 void send_icmp_timestamp(void)
@@ -147,7 +152,11 @@ void send_icmp_timestamp(void)
 	send_ip_handler(packet, ICMPHDR_SIZE + sizeof(struct icmp_tstamp_data));
 	free (packet);
 
-	_icmp_seq++;
+	if (_icmp_seq == 65535) {
+		_icmp_seq = 0;
+	} else {
+		++_icmp_seq;
+	}
 }
 
 void send_icmp_address(void)
@@ -187,7 +196,11 @@ void send_icmp_address(void)
 	send_ip_handler(packet, ICMPHDR_SIZE + 4);
 	free (packet);
 
-	_icmp_seq++;
+	if (_icmp_seq == 65535) {
+		_icmp_seq = 0;
+	} else {
+		++_icmp_seq;
+	}
 }
 
 void send_icmp_other(void)

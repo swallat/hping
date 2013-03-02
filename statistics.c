@@ -135,7 +135,7 @@ void	print_statistics(int signal_id)
 
 	fprintf(stderr, "\n--- %s hping statistic ---\n", targetname);
 	fprintf(stderr, "%d packets transmitted, %d packets received, "
-			"%d%% packet loss\n", sent_pkt, recv_pkt, lossrate);
+			"%d%% packet loss\n", sent_pkt_stat, recv_pkt_stat, lossrate);
 	if (out_of_sequence_pkt)
 		fprintf(stderr, "%d out of sequence packets received\n",
 			out_of_sequence_pkt);

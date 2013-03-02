@@ -192,6 +192,7 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 	}
 	else
 	{
+		printf("MSS not in table");
 		*ms_delay = 0;	/* not in table.. */
 		status = 0;	/* we don't know if it's DUP */
 	}
