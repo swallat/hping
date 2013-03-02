@@ -28,6 +28,7 @@
 #ifndef __u16
 #define __u16		u_int16_t
 #endif /* __u16 */
+#define __u16_MAX 	65535
 #ifndef __u32
 #define __u32		u_int32_t
 #endif /* __u32 */
