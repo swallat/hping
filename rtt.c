@@ -175,8 +175,8 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 			lastTime_usec = curTime_usec;
 
 		} else {
-			lastTime_sec = time(NULL);
-			lastTime_usec = get_usec();
+			lastTime_sec = curTime_sec;
+			lastTime_usec = curTime_usec;
 		}
 		sec_delay = curTime_sec - delaytable[tablepos].sec;
 		usec_delay = curTime_usec - delaytable[tablepos].usec;
