@@ -85,7 +85,7 @@ void send_packet (int signal_id)
 
 	Signal(SIGALRM, send_packet);
 
-	if (count != -1 && count == sent_pkt) { /* count reached? */
+	if ((count != -1 && count == sent_pkt_stat) || (opt_use_run_time && (time(NULL) - runTime_sec) >= opt_run_time)) { /* count reached? */
 		Signal(SIGALRM, print_statistics);
 		alarm(COUNTREACHED_TIMEOUT);
 	} else if (!opt_listenmode) {

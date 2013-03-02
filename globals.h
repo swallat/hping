@@ -136,11 +136,14 @@ extern int
 		icmp_cksum,
 		raw_ip_protocol,
 		opt_use_pre_time,
-		opt_pre_run_time;
+		opt_pre_run_time,
+		opt_use_run_time,
+		opt_run_time;
 
 #include <time.h>
 extern time_t
-	initTime_sec;
+	initTime_sec,
+	runTime_sec;
 
 extern unsigned char 	lsr[255],
 			ssr[255];

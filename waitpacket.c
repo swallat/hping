@@ -156,7 +156,7 @@ void wait_packet(void)
 	}
 
 	/* if the count was reached exit now */
-	if (count != -1 && count == recv_pkt)
+	if (count != -1 && count == recv_pkt || (opt_use_run_time && (time(NULL) - runTime_sec) >= opt_run_time))
 		print_statistics(0);
 }
 
