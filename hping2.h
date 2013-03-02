@@ -28,7 +28,6 @@
 #ifndef __u16
 #define __u16		u_int16_t
 #endif /* __u16 */
-#define __u16_MAX 	65535
 #ifndef __u32
 #define __u32		u_int32_t
 #endif /* __u32 */
@@ -64,7 +63,8 @@
 
 /* requests status table stuffs */
 /* Warning, TABLESIZE 0 == floating point exception */
-#define TABLESIZE	(__u16_MAX-1)
+#define TABLESIZE	65536
+#define __u16_MAX 	65535
 #define S_SENT		0
 #define S_RECV		1
 

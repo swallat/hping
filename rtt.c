@@ -140,12 +140,15 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 	time_t curTime_sec = time(NULL);
 	time_t curTime_usec = get_usec();
 
-	if (*seqp != 0) {
-		for (i = 0; i < TABLESIZE; i++)
-			if (delaytable[i].seq == *seqp) {
-				tablepos = i;
-				break;
-			}
+	//if (*seqp != 0) {
+
+	if (*seqp != 0 && (*seqp >= 0 && *seqp < TABLESIZE) && delaytable[*seqp].seq == *seqp) {
+		tablepos = *seqp;
+		//for (i = 0; i < TABLESIZE; i++)
+		//	if (delaytable[i].seq == *seqp) {
+		//		tablepos = i;
+		//		break;
+		//	}
 	} else {
 		for (i=0; i<TABLESIZE; i++)
 			if (delaytable[i].src == recvport) {
@@ -219,11 +222,15 @@ int rtt(int *seqp, int recvport, float *ms_delay)
 
 void delaytable_add(int seq, int src, time_t sec, time_t usec, int status)
 {
+	//printf("ADD PACKET SEQ: %d at pos %d. status: %d\n", seq, (delaytable_index % TABLESIZE), status);
 	delaytable[delaytable_index % TABLESIZE].seq = seq;
 	delaytable[delaytable_index % TABLESIZE].src = src;
 	delaytable[delaytable_index % TABLESIZE].sec = sec;
 	delaytable[delaytable_index % TABLESIZE].usec = usec;
 	delaytable[delaytable_index % TABLESIZE].status = status;
-	delaytable_index++;
+	++delaytable_index;
+	if (delaytable_index == TABLESIZE)  {
+		delaytable_index = 0;
+	}
 }
 
