@@ -91,8 +91,11 @@ void send_tcp(void)
 	/* send packet */
 	send_ip_handler(packet+PSEUDOHDR_SIZE, packet_size);
 	free(packet);
-
-	sequence++;	/* next sequence number */
+	if (sequence == __u16_MAX) { /* next sequence number */
+		sequence = 0;
+	} else {
+		++sequence;
+	}
 	if (!opt_keepstill)
 		src_port = (sequence + initsport) % 65536;
 
