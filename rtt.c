@@ -70,6 +70,8 @@ void minavgmax(float ms_delay, time_t curTime)
 	mpf_init(ms_delay_sq_mpf);
 	mpf_pow_ui(ms_delay_sq_mpf, ms_delay_mpf, 2);
 	mpf_add(rtt_sumsq, rtt_sumsq, ms_delay_sq_mpf);
+	mpf_clear(ms_delay_mpf);
+	mpf_clear(ms_delay_sq_mpf);
 }
 
 int minavgmax_jitter_history(float jitter_delay) {
@@ -118,6 +120,8 @@ void minavgmax_jitter(float ms_interarival_time, time_t curTime)
 	mpf_init(jitter_delay_sq_mpf);
 	mpf_pow_ui(jitter_delay_sq_mpf, jitter_delay_mpf, 2);
 	mpf_add(jitter_sumsq, jitter_sumsq, jitter_delay_sq_mpf);
+	mpf_clear(jitter_delay_mpf);
+	mpf_clear(jitter_delay_sq_mpf);
 }
 
 

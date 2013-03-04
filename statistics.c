@@ -28,11 +28,21 @@ void	print_statistics(int signal_id)
 			lossrate = 0;
 		else
 			lossrate = 100;
-
+	/*
+	if (recv_pkt > 0)
+			lossrate = 100 - ((recv_pkt*100)/sent_pkt);
+		else
+			if (!sent_pkt)
+				lossrate = 0;
+			else
+				lossrate = 100;
+	*/
 
 	double stdev_d = 0;
 	double rtt_mean_d = 0;
 	double unbiased_stdev = 0;
+	float rtt_max_local = rtt_max;
+	float rtt_min_local = rtt_min;
 	if (rtt_counter > 0){
 		mpf_t variance1, stdev1, count, mean, pow_mean, factor, sub;
 		mpf_init(variance1);
@@ -84,6 +94,8 @@ void	print_statistics(int signal_id)
 
 	double jitter_stdev_d = 0;
 	double jitter_mean_d = 0;
+	float jitter_min_local = jitter_min;
+	float jitter_max_local = jitter_max;
 	double jitter_unbiased_stdev = 0;
 	if (jitter_counter > 0){
 		mpf_t jitter_variance1, jitter_stdev1, jitter_count, jitter_mean, jitter_pow_mean, jitter_factor, jitter_sub;
@@ -142,14 +154,16 @@ void	print_statistics(int signal_id)
 	fprintf(stderr, "round-trip smoothing filter: packets accepted/packets refused = %ld/%ld\n",
 			history_accepted, history_dropped);
 	fprintf(stderr, "round-trip min/avg/max/stdev/unbiased_stdev = %.4f/%.4f/%.4f/%.4f/%.4f ms\n",
-		rtt_min, rtt_mean_d, rtt_max, stdev_d, unbiased_stdev);
+		rtt_min_local, rtt_mean_d, rtt_max_local, stdev_d, unbiased_stdev);
 	fprintf(stderr, "jitter smoothing filter: packets accepted/packets refused = %ld/%ld\n",
 				history_jitter_accepted, history_jitter_dropped);
 	fprintf(stderr, "jitter min/avg/max/stdev/unbiased_stdev = %.4f/%.4f/%.4f/%.4f/%.4f ms\n",
-		jitter_min, jitter_mean_d, jitter_max, jitter_stdev_d, jitter_unbiased_stdev);
+		jitter_min_local, jitter_mean_d, jitter_max_local, jitter_stdev_d, jitter_unbiased_stdev);
 
 	mpf_clear(rtt_sum);
 	mpf_clear(rtt_sumsq);
+	mpf_clear(jitter_sum);
+	mpf_clear(jitter_sumsq);
 
 
 	/* manage exit code */
